@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { useEffect, useRef } from "react";
 import { useEventListener, useSetState } from "@darwish/hooks-core";
 import "./scollbar.css";
@@ -24,13 +23,13 @@ export function ScrollBar(props: React.PropsWithChildren<ScrollBarProps>) {
   });
   const { children, height, width } = props;
 
-  // @ts-ignore
-  useEventListener(scrollRef, "scroll", (e: IEvent) => {
+  useEventListener(scrollRef, "scroll", (e) => {
+    const target = e.target as Element;
     setStates({ visibility: "visible" });
     timeRef.current = new Date().getTime();
     if (scrollRef.current && height) {
       const h =
-        (e.target.scrollTop / (e.target.scrollHeight - e.target.clientHeight)) *
+        (target.scrollTop / (target.scrollHeight - target.clientHeight)) *
         height *
         0.8;
 
