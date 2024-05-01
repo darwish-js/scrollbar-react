@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@darwish/hooks-core':
+    specifier: ^0.0.11
+    version: 0.0.11
   react:
     specifier: ^18.2.0
     version: 18.3.1
@@ -273,6 +276,23 @@ packages:
       '@babel/helper-validator-identifier': 7.24.5
       to-fast-properties: 2.0.0
     dev: true
+
+  /@darwish/hooks-core@0.0.11:
+    resolution: {integrity: sha512-0Gj5n13Y0JL9b7BEgl2k7viGTOauMzcE7CH12ifwWofWGC4o4nrLRDxA7J/Hmqs/nY9vXgFbupH3MqR+ZkZsPA==}
+    dependencies:
+      '@darwish/types': 0.0.8
+      '@darwish/utils-is': 0.0.3
+      immer: 10.1.1
+      js-cookie: 3.0.5
+    dev: false
+
+  /@darwish/types@0.0.8:
+    resolution: {integrity: sha512-U6Jj29w/CResRDsRx+YFkzrrap8XPAwX7SE2kX0SomnFa1M1Rl5fB6Sv9w/5gLTrvBf9ocEWeNSfSb8u4ZmhzQ==}
+    dev: false
+
+  /@darwish/utils-is@0.0.3:
+    resolution: {integrity: sha512-M3DNqqptEvGAwaAPw3hJC07/IHD+CqY4mLLuGszskC1g2RLHFu4dHyMN5O/Yu8zKaAE4RARlO1rZ8iFZ/DdZRA==}
+    dev: false
 
   /@esbuild/aix-ppc64@0.20.2:
     resolution: {integrity: sha512-D+EBOJHXdNZcLJRBkhENNG8Wji2kgc9AZ9KiPr1JuZjsNtyHzrsfLRrY0tk2H2aoFu6RANO1y1iPPUCDYWkb5g==}
@@ -1426,6 +1446,10 @@ packages:
     engines: {node: '>= 4'}
     dev: true
 
+  /immer@10.1.1:
+    resolution: {integrity: sha512-s2MPrmjovJcoMaHtx6K11Ra7oD05NT97w1IC5zpMkT6Atjr7H8LjaDd81iIxUYpMKSRRNMJE703M1Fhr/TctHw==}
+    dev: false
+
   /import-fresh@3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
     engines: {node: '>=6'}
@@ -1475,6 +1499,11 @@ packages:
   /isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
     dev: true
+
+  /js-cookie@3.0.5:
+    resolution: {integrity: sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==}
+    engines: {node: '>=14'}
+    dev: false
 
   /js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}

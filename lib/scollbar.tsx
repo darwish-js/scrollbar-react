@@ -1,5 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect } from "react";
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import React from "react";
+import { useEventListener, useSetState } from "@darwish/hooks-core";
 import "./scollbar.css";
 interface ScrollBarProps {
   height?: number;
@@ -8,29 +9,23 @@ interface ScrollBarProps {
 
 export function ScrollBar(props: React.PropsWithChildren<ScrollBarProps>) {
   const scrollRef = React.useRef<React.ElementRef<"div">>(null);
-  const [verticalTop, setVerticalTop] = React.useState(0);
+  const [states, setStates] = useSetState({
+    verticalTop: 0, // vertical scroll top position
+    horizontalLeft: 0, // horizontal scroll left position
+  });
   const { children, height, width } = props;
-  // useEffect(() => {
 
-  // }, [scrollRef, verticalTop])
+  // @ts-ignore
+  useEventListener(scrollRef, "scroll", (e: IEvent) => {
+    if (scrollRef.current && height) {
+      const h =
+        (e.target.scrollTop / (e.target.scrollHeight - e.target.clientHeight)) *
+        height *
+        0.8;
 
-  useEffect(() => {
-    scrollRef.current?.addEventListener("scroll", (e: Record<string, any>) => {
-      if (scrollRef.current && height) {
-        console.log("scrollHeight", e.target.clientHeight);
-        console.log("scrollTop", e.target.scrollTop);
-        console.dir(e.target);
-
-        const h =
-          (e.target.scrollTop /
-            (e.target.scrollHeight - e.target.clientHeight)) *
-          height *
-          0.8;
-
-        setVerticalTop(h);
-      }
-    });
-  }, [scrollRef.current, height]);
+      setStates({ verticalTop: h });
+    }
+  });
 
   return (
     <div
@@ -76,7 +71,7 @@ export function ScrollBar(props: React.PropsWithChildren<ScrollBarProps>) {
             userSelect: "none",
             width: "100%",
             height: "20%",
-            top: verticalTop,
+            top: states.verticalTop,
           }}
         ></div>
       </div>
