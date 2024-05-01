@@ -1,22 +1,33 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import React from "react";
+import { useEffect, useRef } from "react";
 import { useEventListener, useSetState } from "@darwish/hooks-core";
 import "./scollbar.css";
+import { useTime } from "./hooks/useTime";
 interface ScrollBarProps {
   height?: number;
   width?: number;
 }
+interface States {
+  visibility: React.CSSProperties["visibility"];
+  verticalTop: number;
+  horizontalLeft: number;
+}
 
 export function ScrollBar(props: React.PropsWithChildren<ScrollBarProps>) {
-  const scrollRef = React.useRef<React.ElementRef<"div">>(null);
-  const [states, setStates] = useSetState({
+  const scrollRef = useRef<React.ElementRef<"div">>(null);
+  const timeRef = useRef<number>(0);
+  const time = useTime();
+  const [states, setStates] = useSetState<States>({
     verticalTop: 0, // vertical scroll top position
-    horizontalLeft: 0, // horizontal scroll left position
+    horizontalLeft: 0, // horizontal scroll left position,
+    visibility: "hidden",
   });
   const { children, height, width } = props;
 
   // @ts-ignore
   useEventListener(scrollRef, "scroll", (e: IEvent) => {
+    setStates({ visibility: "visible" });
+    timeRef.current = new Date().getTime();
     if (scrollRef.current && height) {
       const h =
         (e.target.scrollTop / (e.target.scrollHeight - e.target.clientHeight)) *
@@ -26,6 +37,15 @@ export function ScrollBar(props: React.PropsWithChildren<ScrollBarProps>) {
       setStates({ verticalTop: h });
     }
   });
+
+  useEffect(() => {
+    if (timeRef.current) {
+      const diff = time - timeRef.current;
+      if (diff > 3000) {
+        setStates({ visibility: "hidden" });
+      }
+    }
+  }, [time]);
 
   return (
     <div
@@ -59,7 +79,7 @@ export function ScrollBar(props: React.PropsWithChildren<ScrollBarProps>) {
           right: "0px",
           backgroundColor: "rgba(0,0,0,0.2)",
           borderRadius: "99px",
-          // visibility: "hidden",
+          visibility: states.visibility,
         }}
       >
         <div
