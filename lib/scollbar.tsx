@@ -3,8 +3,9 @@ import { useEventListener, useSetState } from "@darwish/hooks-core";
 import "./scollbar.css";
 import { useTime } from "./hooks/useTime";
 interface ScrollBarProps {
-  height?: number;
+  height: number;
   width?: number;
+  thumbColor?: string;
 }
 interface States {
   visibility: React.CSSProperties["visibility"];
@@ -13,6 +14,12 @@ interface States {
 }
 
 export function ScrollBar(props: React.PropsWithChildren<ScrollBarProps>) {
+  const {
+    children,
+    height,
+    width,
+    thumbColor = "rgba(186, 31, 31, 0.5)",
+  } = props;
   const scrollRef = useRef<React.ElementRef<"div">>(null);
   const timeRef = useRef<number>(0);
   const time = useTime();
@@ -21,17 +28,21 @@ export function ScrollBar(props: React.PropsWithChildren<ScrollBarProps>) {
     horizontalLeft: 0, // horizontal scroll left position,
     visibility: "hidden",
   });
-  const { children, height, width } = props;
+
+  const thumbHeight = scrollRef.current
+    ? (height * height) / scrollRef.current.scrollHeight
+    : 0;
 
   useEventListener(scrollRef, "scroll", (e) => {
     const target = e.target as Element;
     setStates({ visibility: "visible" });
     timeRef.current = new Date().getTime();
     if (scrollRef.current && height) {
+      const _thumbHeight = (height * height) / scrollRef.current.scrollHeight;
+
       const h =
         (target.scrollTop / (target.scrollHeight - target.clientHeight)) *
-        height *
-        0.8;
+        (height - _thumbHeight);
 
       setStates({ verticalTop: h });
     }
@@ -84,12 +95,12 @@ export function ScrollBar(props: React.PropsWithChildren<ScrollBarProps>) {
         <div
           style={{
             position: "absolute",
-            background: "rgba(186, 31, 31, 0.5)",
+            backgroundColor: thumbColor,
             borderRadius: "99px",
             cursor: "pointer",
             userSelect: "none",
             width: "100%",
-            height: "20%",
+            height: `${thumbHeight}px`,
             top: states.verticalTop,
           }}
         ></div>
