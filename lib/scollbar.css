@@ -1,0 +1,8 @@
+.dar-scrollbar-content::-webkit-scrollbar {
+  display: none; /* 完全隐藏滚动条 */
+}
+
+.dar-scrollbar-content {
+  -ms-overflow-style: none;  /* IE 和 Edge */
+  scrollbar-width: none;  /* Firefox */
+}
