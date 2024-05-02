@@ -40,12 +40,12 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ env.NODE_VERSION }}
-        cache: 'pnpm'
+        cache: 'npm'
 
     - name: pnpm install, build
       run: |
-        pnpm install
-        pnpm run build:docs --if-present
+        npm install
+        npm run build:docs --if-present
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v3
