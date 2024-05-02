@@ -95,8 +95,6 @@ export function ScrollBar(props: React.PropsWithChildren<ScrollBarProps>) {
     }
   }, [time]);
 
-  console.log("render");
-
   return (
     // @ts-ignore
     <Component

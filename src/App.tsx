@@ -1,88 +1,44 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
-import { ScrollBar } from "../lib/main";
+import ExampleHorizontal from "./components/ep-horizontal";
+import ExampleVertical from "./components/ep-vertical";
 
+const horizontalWidth = 320;
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
-      <ScrollBar
-        className="flex"
-        contentStyle={{ display: "flex", flexWrap: "nowrap" }}
-        width={300}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "20px",
+        }}
       >
-        <div>
-          <img src={reactLogo} alt="React" />
-          <h1>React ScrollBar</h1>
-          <p>
-            A simple React component that creates a custom scrollbar that can be
-            styled and customized.
-          </p>
-          <button onClick={() => setCount(count + 1)}>
-            Click me {count} times
-          </button>
-          <img src={viteLogo} alt="Vite" />
-
-          <p>
-            This is a demo of the React ScrollBar component. You can use it to
-            create a custom scrollbar that can be styled and customized.
-          </p>
+        <div style={{ width: `${horizontalWidth}px` }}>
+          <h1 style={{ textAlign: "center" }}>Horizontal Scrollbar</h1>
+          <div
+            style={{
+              backgroundColor: "lightgray",
+              borderRadius: "10px",
+              padding: "10px",
+            }}
+          >
+            <ExampleHorizontal width={300} />
+          </div>
         </div>
         <div>
-          <img src={reactLogo} alt="React" />
-          <h1>React ScrollBar</h1>
-          <p>
-            A simple React component that creates a custom scrollbar that can be
-            styled and customized.
-          </p>
-          <button onClick={() => setCount(count + 1)}>
-            Click me {count} times
-          </button>
-          <img src={viteLogo} alt="Vite" />
-
-          <p>
-            This is a demo of the React ScrollBar component. You can use it to
-            create a custom scrollbar that can be styled and customized.
-          </p>
+          <h1>Vertical Scrollbar</h1>
+          <div
+            style={{
+              backgroundColor: "lightgray",
+              padding: "20px",
+              borderRadius: "10px",
+            }}
+          >
+            <ExampleVertical />
+          </div>
         </div>
-        <div>
-          <img src={reactLogo} alt="React" />
-          <h1>React ScrollBar</h1>
-          <p>
-            A simple React component that creates a custom scrollbar that can be
-            styled and customized.
-          </p>
-          <button onClick={() => setCount(count + 1)}>
-            Click me {count} times
-          </button>
-          <img src={viteLogo} alt="Vite" />
-
-          <p>
-            This is a demo of the React ScrollBar component. You can use it to
-            create a custom scrollbar that can be styled and customized.
-          </p>
-        </div>
-        <div>
-          <img src={reactLogo} alt="React" />
-          <h1>React ScrollBar</h1>
-          <p>
-            A simple React component that creates a custom scrollbar that can be
-            styled and customized.
-          </p>
-          <button onClick={() => setCount(count + 1)}>
-            Click me {count} times
-          </button>
-          <img src={viteLogo} alt="Vite" />
-
-          <p>
-            This is a demo of the React ScrollBar component. You can use it to
-            create a custom scrollbar that can be styled and customized.
-          </p>
-        </div>
-      </ScrollBar>
+      </div>
     </>
   );
 }
