@@ -1,5 +1,7 @@
 ## Scrollbar React
 
+[![NPM version](https://img.shields.io/npm/v/@darwish/scrollbar-react.svg?style=flat)](https://www.npmjs.com/package/@darwish/scrollbar-react)[![npm](https://img.shields.io/npm/dt/@darwish/scrollbar-react.svg)](https://www.npmjs.com/package/@darwish/scrollbar-react)[![npm](https://img.shields.io/npm/dw/@darwish/scrollbar-react.svg)](https://www.npmjs.com/package/@darwish/scrollbar-react)
+
 A simple scrollbar component for React.
 
 ## Installation
