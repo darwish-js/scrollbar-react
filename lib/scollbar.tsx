@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { useEffect, useRef } from "react";
-import { useEventListener, useSetState } from "@darwish/hooks-core";
+// import { useEventListener, useSetState } from "@darwish/hooks-core";
 import "./scollbar.css";
 import { useTime } from "./hooks/useTime";
+import { useSetState } from "./hooks/useSetState";
+import { useEventListener } from "./hooks/useEventListener";
 
 type TagType = React.ElementType | keyof JSX.IntrinsicElements;
 type ScrollBarProps<T extends TagType = "div" | keyof JSX.IntrinsicElements> = {
@@ -88,6 +91,7 @@ export function ScrollBar(props: React.PropsWithChildren<ScrollBarProps>) {
   }, [time]);
 
   return (
+    // @ts-ignore
     <Component
       className="dar-scrollbar"
       {...restProps}
