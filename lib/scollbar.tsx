@@ -8,7 +8,7 @@ import { useConfig } from "./hooks/useConfig";
 import { DEFAULT_CONTEXT } from "./constants";
 
 type TagType = React.ElementType | keyof JSX.IntrinsicElements;
-type ScrollBarProps<T extends TagType = "div" | keyof JSX.IntrinsicElements> = {
+type ScrollbarProps<T extends TagType = "div" | keyof JSX.IntrinsicElements> = {
   height?: number;
   width?: number;
   supressScrollX?: boolean;
@@ -26,7 +26,7 @@ interface States {
   horizontalLeft: number;
 }
 
-export function ScrollBar(props: React.PropsWithChildren<ScrollBarProps>) {
+export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
   const {
     children,
     height,

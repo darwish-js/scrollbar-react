@@ -1,9 +1,9 @@
-import { ScrollBar } from "../../lib/main";
+import { Scrollbar } from "../../lib/main";
 import Example from "./ep";
 
 export default function ExampleHorizontal({ width }: { width: number }) {
   return (
-    <ScrollBar
+    <Scrollbar
       className="flex"
       contentStyle={{
         display: "flex",
@@ -15,6 +15,6 @@ export default function ExampleHorizontal({ width }: { width: number }) {
       {[...Array(10)].map((_, index) => (
         <Example key={index} />
       ))}
-    </ScrollBar>
+    </Scrollbar>
   );
 }
