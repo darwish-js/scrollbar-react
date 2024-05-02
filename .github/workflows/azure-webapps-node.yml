@@ -29,11 +29,13 @@ env:
 
 permissions:
   contents: read
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - name: install pnpm
+      run: |
+        npm install -g pnpm
     - uses: actions/checkout@v4
 
     - name: Set up Node.js
@@ -44,7 +46,6 @@ jobs:
 
     - name: pnpm install, build
       run: |
-        npm install -g pnpm
         pnpm install
         pnpm run build:docs --if-present
 
