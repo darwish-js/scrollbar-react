@@ -9,7 +9,11 @@ function App() {
 
   return (
     <>
-      <ScrollBar height={500}>
+      <ScrollBar
+        className="flex"
+        contentStyle={{ display: "flex", flexWrap: "nowrap" }}
+        width={300}
+      >
         <div>
           <img src={reactLogo} alt="React" />
           <h1>React ScrollBar</h1>
