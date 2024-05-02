@@ -1,22 +1,23 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { useEffect, useRef } from "react";
-// import { useEventListener, useSetState } from "@darwish/hooks-core";
-import "./scollbar.css";
 import { useTime } from "./hooks/useTime";
 import { useSetState } from "./hooks/useSetState";
 import { useEventListener } from "./hooks/useEventListener";
+import "./scollbar.css";
+import { useConfig } from "./hooks/useConfig";
+import { DEFAULT_CONTEXT } from "./constants";
 
 type TagType = React.ElementType | keyof JSX.IntrinsicElements;
 type ScrollBarProps<T extends TagType = "div" | keyof JSX.IntrinsicElements> = {
   height?: number;
   width?: number;
-  trackStyle?: React.CSSProperties;
-  thumbStyle?: React.CSSProperties;
-  supressAutoHide?: boolean;
-  as?: T;
   supressScrollX?: boolean;
   supressScrollY?: boolean;
+  supressAutoHide?: boolean;
+  trackStyle?: React.CSSProperties;
+  thumbStyle?: React.CSSProperties;
   contentStyle?: React.CSSProperties;
+  as?: T;
 } & React.ComponentPropsWithoutRef<T>;
 
 interface States {
@@ -37,9 +38,11 @@ export function ScrollBar(props: React.PropsWithChildren<ScrollBarProps>) {
     contentStyle = {},
     ...restProps
   } = props;
+  const { scrollbarWidth, trackColor, thumbColor, scrollbarRadius } =
+    useConfig() || DEFAULT_CONTEXT;
   const scrollRef = useRef<React.ElementRef<"div">>(null);
   const timeRef = useRef<number>(0);
-  const time = useTime();
+  const [time, setStartRunTime] = useTime();
   const [states, setStates] = useSetState<States>({
     verticalTop: 0, // vertical scroll top position
     horizontalLeft: 0, // horizontal scroll left position,
@@ -57,6 +60,7 @@ export function ScrollBar(props: React.PropsWithChildren<ScrollBarProps>) {
 
   useEventListener(scrollRef, "scroll", (e) => {
     const target = e.target as Element;
+    setStartRunTime(true);
     if (!supressAutoHide) {
       setStates({ visibility: "visible" });
     }
@@ -84,11 +88,14 @@ export function ScrollBar(props: React.PropsWithChildren<ScrollBarProps>) {
   useEffect(() => {
     if (timeRef.current && !supressAutoHide) {
       const diff = time - timeRef.current;
-      if (diff > 3000) {
+      if (diff >= 3000) {
         setStates({ visibility: "hidden" });
+        setStartRunTime(false);
       }
     }
   }, [time]);
+
+  console.log("render");
 
   return (
     // @ts-ignore
@@ -121,12 +128,12 @@ export function ScrollBar(props: React.PropsWithChildren<ScrollBarProps>) {
           style={{
             position: "absolute",
             height,
-            width: "8px",
+            width: scrollbarWidth,
             top: "0px",
             bottom: "0px",
             right: "0px",
-            backgroundColor: "rgba(0,0,0,0.2)",
-            borderRadius: "99px",
+            backgroundColor: trackColor,
+            borderRadius: scrollbarRadius,
             visibility: states.visibility,
             ...trackStyle,
           }}
@@ -135,8 +142,8 @@ export function ScrollBar(props: React.PropsWithChildren<ScrollBarProps>) {
             className="dar-scrollbar-vertical-thumb"
             style={{
               position: "absolute",
-              backgroundColor: "rgba(186, 31, 31, 0.5)",
-              borderRadius: "99px",
+              backgroundColor: thumbColor,
+              borderRadius: scrollbarWidth,
               cursor: "pointer",
               userSelect: "none",
               width: "100%",
@@ -153,12 +160,12 @@ export function ScrollBar(props: React.PropsWithChildren<ScrollBarProps>) {
           style={{
             position: "absolute",
             width,
-            height: "8px",
+            height: scrollbarWidth,
             left: "0px",
             right: "0px",
             bottom: "0px",
-            backgroundColor: "rgba(0,0,0,0.2)",
-            borderRadius: "99px",
+            backgroundColor: trackColor,
+            borderRadius: scrollbarRadius,
             visibility: states.visibility,
             ...trackStyle,
           }}
@@ -167,8 +174,8 @@ export function ScrollBar(props: React.PropsWithChildren<ScrollBarProps>) {
             className="dar-scrollbar-horizontal-thumb"
             style={{
               position: "absolute",
-              backgroundColor: "rgba(186, 31, 31, 0.5)",
-              borderRadius: "99px",
+              backgroundColor: thumbColor,
+              borderRadius: scrollbarRadius,
               cursor: "pointer",
               userSelect: "none",
               height: "100%",
