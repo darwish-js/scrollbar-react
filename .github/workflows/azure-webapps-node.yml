@@ -1,5 +1,5 @@
-name: learn-github-actions
-run-name: ${{ github.actor }} is learning Github actions
+name: scrollbar-action
+run-name: ${{ github.actor }} is scroll-bar actions
 on: [push]
 
 jobs: 
