@@ -43,10 +43,12 @@ import { GlobalScrollbarProvider, Scrollbar } from "@darwish/scrollbar-react";
 function App() {
   return (
     <GlobalScrollbarProvider
-      scrollbarWidth={8}
-      scrollbarRadius={99}
-      trackColor="rgba(0, 0, 0, 0.2)"
-      thumbColor="rgba(186, 31, 31, 0.5)"
+      config={{
+        scrollbarWidth={8}
+        scrollbarRadius={99}
+        trackColor="rgba(0, 0, 0, 0.2)"
+        thumbColor="rgba(186, 31, 31, 0.5)"
+      }}
     >
       <div>
         <Scrollbar height={500}>
