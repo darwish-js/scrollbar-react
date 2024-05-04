@@ -2,13 +2,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect } from "react";
 
-/**
- *
- * @param name
- * @param event
- * @param callback
- * @param options
- */
 export function useEventListener<
   K extends keyof HTMLElementEventMap,
   U extends React.ElementRef<any>

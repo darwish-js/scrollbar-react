@@ -6,8 +6,10 @@ import { useEventListener } from "./hooks/useEventListener";
 import "./scollbar.css";
 import { useConfig } from "./hooks/useConfig";
 import { DEFAULT_CONTEXT } from "./constants";
+import { computeOverflow } from "./utils/compute-overflow";
 
 type TagType = React.ElementType | keyof JSX.IntrinsicElements;
+type Visibility = React.CSSProperties["visibility"];
 type ScrollbarProps<T extends TagType = "div" | keyof JSX.IntrinsicElements> = {
   height?: number;
   width?: number;
@@ -21,9 +23,11 @@ type ScrollbarProps<T extends TagType = "div" | keyof JSX.IntrinsicElements> = {
 } & React.ComponentPropsWithoutRef<T>;
 
 interface States {
-  visibility: React.CSSProperties["visibility"];
+  visibility: Visibility;
   verticalTop: number;
   horizontalLeft: number;
+  visibilityX: Visibility;
+  visibilityY: Visibility;
 }
 
 export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
@@ -31,6 +35,8 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
     children,
     height,
     width,
+    supressScrollX,
+    supressScrollY,
     trackStyle = {},
     thumbStyle = {},
     supressAutoHide = false,
@@ -41,13 +47,33 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
   const { scrollbarWidth, trackColor, thumbColor, scrollbarRadius } =
     useConfig() || DEFAULT_CONTEXT;
   const scrollRef = useRef<React.ElementRef<"div">>(null);
-  const timeRef = useRef<number>(0);
+  const timeRef = useRef({
+    x: 0,
+    y: 0,
+  });
+  const scrollValRef = useRef({ x: width ?? 0, y: height ?? 0 });
+  const lastScrollValRef = useRef({ x: 0, y: 0 });
   const [time, setStartRunTime] = useTime();
   const [states, setStates] = useSetState<States>({
     verticalTop: 0, // vertical scroll top position
     horizontalLeft: 0, // horizontal scroll left position,
     visibility: supressAutoHide ? "visible" : "hidden",
+    visibilityX: supressScrollX || supressAutoHide ? "visible" : "hidden",
+    visibilityY: supressScrollY || supressAutoHide ? "visible" : "hidden",
   });
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollValRef.current = {
+        x: width ?? scrollRef.current.clientWidth,
+        y: height ?? scrollRef.current.clientHeight,
+      };
+      lastScrollValRef.current = {
+        x: scrollRef.current.scrollLeft,
+        y: scrollRef.current.scrollTop,
+      };
+    }
+  }, [scrollRef]);
 
   const thumbHeight =
     scrollRef.current && height
@@ -59,37 +85,53 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
       : 0;
 
   useEventListener(scrollRef, "scroll", (e) => {
+    const scrollX = scrollValRef.current.x;
+    const scrollY = scrollValRef.current.y;
     const target = e.target as Element;
     setStartRunTime(true);
     if (!supressAutoHide) {
       setStates({ visibility: "visible" });
     }
-    timeRef.current = new Date().getTime();
-    if (scrollRef.current && height) {
-      const _thumbHeight = (height * height) / scrollRef.current.scrollHeight;
+
+    const nowDate = new Date().getTime();
+    if (target.scrollLeft !== lastScrollValRef.current.x) {
+      timeRef.current.x = nowDate;
+      setStates({ visibilityX: "visible" });
+    }
+    if (target.scrollTop !== lastScrollValRef.current.y) {
+      timeRef.current.y = nowDate;
+      setStates({ visibilityY: "visible" });
+    }
+    if (scrollRef.current && scrollY) {
+      const _thumbHeight = (scrollY * scrollY) / scrollRef.current.scrollHeight;
 
       const h =
         (target.scrollTop / (target.scrollHeight - target.clientHeight)) *
-        (height - _thumbHeight);
+        (scrollY - _thumbHeight);
 
       setStates({ verticalTop: h });
     }
-    if (scrollRef.current && width) {
-      const _thumbWidth = (width * width) / scrollRef.current.scrollWidth;
+    if (scrollRef.current && scrollX) {
+      const _thumbWidth = (scrollX * scrollX) / scrollRef.current.scrollWidth;
 
       const w =
         (target.scrollLeft / (target.scrollWidth - target.clientWidth)) *
-        (width - _thumbWidth);
-
+        (scrollX - _thumbWidth);
       setStates({ horizontalLeft: w });
     }
   });
 
   useEffect(() => {
-    if (timeRef.current && !supressAutoHide) {
-      const diff = time - timeRef.current;
-      if (diff >= 3000) {
-        setStates({ visibility: "hidden" });
+    if ((timeRef.current.x || timeRef.current.y) && !supressAutoHide) {
+      const diffX = time - timeRef.current.x;
+      const diffY = time - timeRef.current.y;
+      if (diffX >= 3000) {
+        setStates({ visibilityX: "hidden" });
+      }
+      if (diffY >= 3000) {
+        setStates({ visibilityY: "hidden" });
+      }
+      if (states.visibilityX === "hidden" && states.visibilityY === "hidden") {
         setStartRunTime(false);
       }
     }
@@ -102,9 +144,9 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
       {...restProps}
       style={{
         position: "relative",
-        width: width,
-        height: height,
         ...restProps.style,
+        ...(width !== undefined ? { width } : {}),
+        ...(height !== undefined ? { height } : {}),
       }}
     >
       <div
@@ -113,14 +155,15 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
         style={{
           width: "100%",
           height: "100%",
-          overflow: "auto",
+          overflowX: computeOverflow(supressScrollX),
+          overflowY: computeOverflow(supressScrollY),
           overflowAnchor: "none",
           ...contentStyle,
         }}
       >
         {children}
       </div>
-      {height ? (
+      {supressScrollY !== true ? (
         <div
           className="dar-scrollbar-vertical-track"
           style={{
@@ -132,7 +175,7 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
             right: "0px",
             backgroundColor: trackColor,
             borderRadius: scrollbarRadius,
-            visibility: states.visibility,
+            visibility: states.visibilityY,
             ...trackStyle,
           }}
         >
@@ -146,13 +189,13 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
               userSelect: "none",
               width: "100%",
               height: `${thumbHeight}px`,
-              top: states.verticalTop,
+              top: `${states.verticalTop}px`,
               ...thumbStyle,
             }}
           />
         </div>
       ) : null}
-      {width ? (
+      {supressScrollX !== true ? (
         <div
           className="dar-scrollbar-horizontal-track"
           style={{
@@ -164,7 +207,7 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
             bottom: "0px",
             backgroundColor: trackColor,
             borderRadius: scrollbarRadius,
-            visibility: states.visibility,
+            visibility: states.visibilityX,
             ...trackStyle,
           }}
         >
@@ -178,7 +221,7 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
               userSelect: "none",
               height: "100%",
               width: `${thumbWidth}px`,
-              left: states.horizontalLeft,
+              left: `${states.horizontalLeft}px`,
               ...thumbStyle,
             }}
           />
