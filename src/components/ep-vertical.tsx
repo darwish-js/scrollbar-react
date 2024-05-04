@@ -1,9 +1,14 @@
 import { Scrollbar } from "../../lib/main";
 import Example from "./ep";
 
-export default function ExampleVertical() {
+interface ExampleVerticalProps extends React.HTMLAttributes<HTMLDivElement> {
+  heihgt?: number;
+}
+export default function ExampleVertical(props: ExampleVerticalProps) {
+  const { heihgt, ...restProps } = props;
+
   return (
-    <Scrollbar height={500}>
+    <Scrollbar height={heihgt} {...restProps}>
       {[...Array(10)].map((_, index) => (
         <Example key={index} />
       ))}

@@ -23,7 +23,7 @@ function App() {
               padding: "10px",
             }}
           >
-            <ExampleHorizontal width={300} />
+            <ExampleHorizontal />
           </div>
         </div>
         <div>

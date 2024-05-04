@@ -109,7 +109,7 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
         (target.scrollTop / (target.scrollHeight - target.clientHeight)) *
         (scrollY - _thumbHeight);
 
-      setStates({ verticalTop: h });
+      setStates({ verticalTop: h || 0 });
     }
     if (scrollRef.current && scrollX) {
       const _thumbWidth = (scrollX * scrollX) / scrollRef.current.scrollWidth;
@@ -117,7 +117,7 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
       const w =
         (target.scrollLeft / (target.scrollWidth - target.clientWidth)) *
         (scrollX - _thumbWidth);
-      setStates({ horizontalLeft: w });
+      setStates({ horizontalLeft: w || 0 });
     }
   });
 

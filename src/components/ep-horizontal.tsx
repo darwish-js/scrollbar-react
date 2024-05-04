@@ -1,16 +1,21 @@
 import { Scrollbar } from "../../lib/main";
 import Example from "./ep";
 
-export default function ExampleHorizontal({ width }: { width: number }) {
+interface ExampleHorizontalProps extends React.HTMLAttributes<HTMLDivElement> {
+  width?: number;
+}
+export default function ExampleHorizontal(props: ExampleHorizontalProps) {
+  const { width, ...restProps } = props;
   return (
     <Scrollbar
+      width={width}
       className="flex"
       contentStyle={{
         display: "flex",
         flexWrap: "nowrap",
         gap: "20px",
       }}
-      width={width}
+      {...restProps}
     >
       {[...Array(10)].map((_, index) => (
         <Example key={index} />
