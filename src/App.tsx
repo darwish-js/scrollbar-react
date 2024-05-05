@@ -1,45 +1,28 @@
+import "mac-scrollbar/dist/mac-scrollbar.css";
+import { EpVertical1 } from "./components/ep-vertical-1";
+import { EpVertical2 } from "./components/ep-vertical-2";
+import { EpVertical3 } from "./components/ep-vertical-3";
+import { EpHorizontal1 } from "./components/ep-horizontal-1";
 import "./App.css";
-import ExampleHorizontal from "./components/ep-horizontal";
-import ExampleVertical from "./components/ep-vertical";
+import { EpHorizontal2 } from "./components/ep-horizontal-2";
+import { EpHorizontal3 } from "./components/ep-horizontal-3";
 
-const horizontalWidth = 320;
 function App() {
   return (
-    <>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: "20px",
-        }}
-      >
-        <div style={{ width: `${horizontalWidth}px` }}>
-          <h1 style={{ textAlign: "center" }}>Horizontal Scrollbar</h1>
-          <div
-            style={{
-              backgroundColor: "lightgray",
-              borderRadius: "10px",
-              padding: "10px",
-            }}
-          >
-            <ExampleHorizontal />
-          </div>
-        </div>
-        <div>
-          <h1>Vertical Scrollbar</h1>
-          <div
-            style={{
-              backgroundColor: "lightgray",
-              padding: "20px",
-              borderRadius: "10px",
-            }}
-          >
-            <ExampleVertical />
-          </div>
-        </div>
-      </div>
-    </>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr 1fr",
+        gridTemplateRows: "400px 400px",
+      }}
+    >
+      <EpVertical1 />
+      <EpVertical2 />
+      <EpVertical3 />
+      <EpHorizontal1 />
+      <EpHorizontal2 />
+      <EpHorizontal3 />
+    </div>
   );
 }
 

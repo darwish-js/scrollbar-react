@@ -3,10 +3,10 @@ import { useEffect, useRef } from "react";
 import { useTime } from "./hooks/useTime";
 import { useSetState } from "./hooks/useSetState";
 import { useEventListener } from "./hooks/useEventListener";
-import "./scollbar.css";
 import { useConfig } from "./hooks/useConfig";
 import { DEFAULT_CONTEXT } from "./constants";
 import { computeOverflow } from "./utils/compute-overflow";
+import "./scollbar.css";
 
 type TagType = React.ElementType | keyof JSX.IntrinsicElements;
 type Visibility = React.CSSProperties["visibility"];
@@ -23,7 +23,6 @@ type ScrollbarProps<T extends TagType = "div" | keyof JSX.IntrinsicElements> = {
 } & React.ComponentPropsWithoutRef<T>;
 
 interface States {
-  visibility: Visibility;
   verticalTop: number;
   horizontalLeft: number;
   visibilityX: Visibility;
@@ -57,7 +56,6 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
   const [states, setStates] = useSetState<States>({
     verticalTop: 0, // vertical scroll top position
     horizontalLeft: 0, // horizontal scroll left position,
-    visibility: supressAutoHide ? "visible" : "hidden",
     visibilityX: supressScrollX || supressAutoHide ? "visible" : "hidden",
     visibilityY: supressScrollY || supressAutoHide ? "visible" : "hidden",
   });
@@ -73,25 +71,22 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
         y: scrollRef.current.scrollTop,
       };
     }
-  }, [scrollRef]);
+  }, [scrollRef.current]);
 
-  const thumbHeight =
-    scrollRef.current && height
-      ? (height * height) / scrollRef.current.scrollHeight
-      : 0;
-  const thumbWidth =
-    scrollRef.current && width
-      ? (width * width) / scrollRef.current.scrollWidth
-      : 0;
+  const thumbHeight = scrollRef.current
+    ? (scrollValRef.current.y * scrollValRef.current.y) /
+      scrollRef.current.scrollHeight
+    : 0;
+  const thumbWidth = scrollRef.current
+    ? (scrollValRef.current.x * scrollValRef.current.x) /
+      scrollRef.current.scrollWidth
+    : 0;
 
   useEventListener(scrollRef, "scroll", (e) => {
     const scrollX = scrollValRef.current.x;
     const scrollY = scrollValRef.current.y;
     const target = e.target as Element;
     setStartRunTime(true);
-    if (!supressAutoHide) {
-      setStates({ visibility: "visible" });
-    }
 
     const nowDate = new Date().getTime();
     if (target.scrollLeft !== lastScrollValRef.current.x) {
@@ -144,6 +139,7 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
       {...restProps}
       style={{
         position: "relative",
+        overflow: "hidden",
         ...restProps.style,
         ...(width !== undefined ? { width } : {}),
         ...(height !== undefined ? { height } : {}),
