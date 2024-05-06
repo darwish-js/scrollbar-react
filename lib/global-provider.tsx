@@ -9,9 +9,11 @@ export interface GlobalScrollbarContextType {
 }
 
 export const GlobalScrollbarContext =
-  createContext<GlobalScrollbarContextType>(DEFAULT_CONTEXT);
+  createContext<Partial<GlobalScrollbarContextType>>(DEFAULT_CONTEXT);
 export const GlobalScrollbarProvider = (
-  props: React.PropsWithChildren<{ config: GlobalScrollbarContextType }>
+  props: React.PropsWithChildren<{
+    config: Partial<GlobalScrollbarContextType>;
+  }>
 ) => {
   const context = Object.assign({}, DEFAULT_CONTEXT, props.config);
 

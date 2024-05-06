@@ -6,7 +6,8 @@ import { useEventListener } from "./hooks/useEventListener";
 import { useConfig } from "./hooks/useConfig";
 import { DEFAULT_CONTEXT } from "./constants";
 import { computeOverflow } from "./utils/compute-overflow";
-import "./scollbar.css";
+// @ts-ignore
+import style from "./scollbar.module.css";
 
 type TagType = React.ElementType | keyof JSX.IntrinsicElements;
 type Visibility = React.CSSProperties["visibility"];
@@ -135,8 +136,8 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
   return (
     // @ts-ignore
     <Component
-      className="dar-scrollbar"
       {...restProps}
+      className={`dar-scrollbar ${restProps.className ?? ""}`}
       style={{
         position: "relative",
         overflow: "hidden",
@@ -147,7 +148,7 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
     >
       <div
         ref={scrollRef}
-        className="dar-scrollbar-content"
+        className={`${style[`dar-scrollbar-content`]}`}
         style={{
           width: "100%",
           height: "100%",

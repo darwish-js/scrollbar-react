@@ -1,6 +1,6 @@
 {
   "name": "@darwish/scrollbar-react",
-  "version": "0.0.7",
+  "version": "0.1.4",
   "type": "module",
   "main": "./dist/scrollbar-react.js",
   "types": "./dist/main.d.ts",
@@ -23,6 +23,11 @@
   "files": [
     "dist",
     "README.md"
+  ],
+  "keywords": [
+    "scrollbar",
+    "react",
+    "react-component"
   ],
   "publishConfig": {
     "access": "public"

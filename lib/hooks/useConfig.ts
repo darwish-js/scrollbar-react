@@ -4,6 +4,6 @@ import {
   type GlobalScrollbarContextType,
 } from "../global-provider";
 
-export function useConfig(): GlobalScrollbarContextType {
-  return useContext(GlobalScrollbarContext);
+export function useConfig() {
+  return useContext(GlobalScrollbarContext) as GlobalScrollbarContextType;
 }
