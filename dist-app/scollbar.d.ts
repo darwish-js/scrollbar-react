@@ -1,4 +1,4 @@
-
+/// <reference types="react" />
 type TagType = React.ElementType | keyof JSX.IntrinsicElements;
 type ScrollbarProps<T extends TagType = "div" | keyof JSX.IntrinsicElements> = {
     height?: number;
