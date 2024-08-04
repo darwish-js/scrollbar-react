@@ -1,17 +1,21 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { useEffect, useRef } from "react";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+} from "react";
 import { useTime } from "./hooks/useTime";
 import { useSetState } from "./hooks/useSetState";
 import { useEventListener } from "./hooks/useEventListener";
 import { useConfig } from "./hooks/useConfig";
 import { DEFAULT_CONTEXT } from "./constants";
 import { computeOverflow } from "./utils/compute-overflow";
-// @ts-ignore
 import style from "./scollbar.module.css";
 
-type TagType = React.ElementType | keyof JSX.IntrinsicElements;
+export type TagType = React.ElementType | keyof JSX.IntrinsicElements;
 type Visibility = React.CSSProperties["visibility"];
-type ScrollbarProps<T extends TagType = "div" | keyof JSX.IntrinsicElements> = {
+type ScrollbarProps<T extends TagType = "div"> = {
   height?: number;
   width?: number;
   supressScrollX?: boolean;
@@ -20,17 +24,26 @@ type ScrollbarProps<T extends TagType = "div" | keyof JSX.IntrinsicElements> = {
   trackStyle?: React.CSSProperties;
   thumbStyle?: React.CSSProperties;
   contentStyle?: React.CSSProperties;
+  contentClassName?: string;
   as?: T;
 } & React.ComponentPropsWithoutRef<T>;
 
-interface States {
+export interface States {
   verticalTop: number;
   horizontalLeft: number;
   visibilityX: Visibility;
   visibilityY: Visibility;
 }
 
-export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
+export interface ScrollbarRef<T extends TagType = "div"> {
+  wrapperRef?: React.RefObject<React.ElementRef<T>>;
+  scrollRef?: React.RefObject<HTMLDivElement>;
+}
+
+function ScrollbarView<T extends TagType = "div">(
+  props: React.PropsWithChildren<ScrollbarProps<T>>,
+  ref: React.ForwardedRef<ScrollbarRef<T>>
+) {
   const {
     children,
     height,
@@ -42,8 +55,10 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
     supressAutoHide = false,
     as: Component = "div",
     contentStyle = {},
+    contentClassName,
     ...restProps
   } = props;
+
   const { scrollbarWidth, trackColor, thumbColor, scrollbarRadius } =
     useConfig() || DEFAULT_CONTEXT;
   const scrollRef = useRef<React.ElementRef<"div">>(null);
@@ -51,6 +66,7 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
     x: 0,
     y: 0,
   });
+  const wrapperRef = useRef<React.ElementRef<T>>(null);
   const scrollValRef = useRef({ x: width ?? 0, y: height ?? 0 });
   const lastScrollValRef = useRef({ x: 0, y: 0 });
   const [time, setStartRunTime] = useTime();
@@ -60,6 +76,11 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
     visibilityX: supressScrollX || supressAutoHide ? "visible" : "hidden",
     visibilityY: supressScrollY || supressAutoHide ? "visible" : "hidden",
   });
+
+  useImperativeHandle(ref, () => ({
+    wrapperRef: wrapperRef,
+    scrollRef: scrollRef,
+  }));
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -72,7 +93,7 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
         y: scrollRef.current.scrollTop,
       };
     }
-  }, [scrollRef.current]);
+  }, [height, width]);
 
   const thumbHeight = scrollRef.current
     ? (scrollValRef.current.y * scrollValRef.current.y) /
@@ -131,11 +152,19 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
         setStartRunTime(false);
       }
     }
-  }, [time]);
+  }, [
+    setStartRunTime,
+    setStates,
+    states.visibilityX,
+    states.visibilityY,
+    supressAutoHide,
+    time,
+  ]);
 
   return (
     // @ts-ignore
     <Component
+      ref={wrapperRef}
       {...restProps}
       className={`dar-scrollbar ${restProps.className ?? ""}`}
       style={{
@@ -148,7 +177,9 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
     >
       <div
         ref={scrollRef}
-        className={`${style[`dar-scrollbar-content`]}`}
+        className={`${style[`dar-scrollbar-content`]} ${
+          contentClassName ?? ""
+        }`}
         style={{
           width: "100%",
           height: "100%",
@@ -227,3 +258,5 @@ export function Scrollbar(props: React.PropsWithChildren<ScrollbarProps>) {
     </Component>
   );
 }
+
+export const Scrollbar = forwardRef(ScrollbarView);
