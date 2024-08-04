@@ -11,6 +11,7 @@ import { useEventListener } from "./hooks/useEventListener";
 import { useConfig } from "./hooks/useConfig";
 import { DEFAULT_CONTEXT } from "./constants";
 import { computeOverflow } from "./utils/compute-overflow";
+// @ts-ignore
 import style from "./scollbar.module.css";
 
 export type TagType = React.ElementType | keyof JSX.IntrinsicElements;
